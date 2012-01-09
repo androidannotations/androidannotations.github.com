@@ -1,0 +1,247 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title>AndroidAnnotations</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/shCoreDefault.css">
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+	<script src="js/libs/modernizr-2.0.min.js"></script>
+	<script src="js/libs/shCore.js"></script>
+	<script src="js/libs/shBrushJava.js"></script>
+</head>
+<body>
+	<div id="header-container">
+		<header class="wrapper">
+		<div></div>
+		<h1 id="title">AndroidAnnotations</h1>
+		<p id="baseline">Simple and powerful Android code!</p>
+		</header>
+	</div>
+	<div id="menu">
+		<div>
+			<ul>
+				<li><a href="https://github.com/excilys/androidannotations">Project Home</a></li>	
+				<li><a href="https://github.com/excilys/androidannotations/wiki/GettingStarted">Get Started!</a></li>	
+				<li><a href="https://github.com/excilys/androidannotations/issues">Bug Tracker</a></li>	
+				<li><a href="http://plus.google.com/106206799999983258245">Google plus</a></li>	
+				<li><a href="http://twitter.com/AndAnnotations">Twitter</a></li>	
+			</ul>
+		</div>
+	</div>
+	<div id="main" >
+		<article>
+            <div class="column">
+                <h3>Before</h3>
+		<hr/>
+                <script type="syntaxhighlighter" class="brush: java; ruler:false; tab-size:2;smart-tabs:true;"><![CDATA[
+public class BookmarksToClipboardActivity extends Activity {
+	
+	BookmarkAdapter adapter;
+
+	ListView bookmarkList;
+
+	EditText search;
+
+	BookmarkApplication application;
+
+	Animation fadeIn;
+
+	ClipboardManager clipboardManager;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(FLAG_FULLSCREEN, FLAG_FULLSCREEN);
+
+		setContentView(R.layout.bookmarks);
+
+		bookmarkList = (ListView) findViewById(R.id.bookmarkList);
+		search = (EditText) findViewById(R.id.search);
+		application = (BookmarkApplication) getApplication();
+		fadeIn = AnimationUtils.loadAnimation(this, anim.fade_in);
+		clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+		View updateBookmarksButton1 = findViewById(R.id.updateBookmarksButton1);
+		updateBookmarksButton1.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				updateBookmarksClicked();
+			}
+		});
+
+		View updateBookmarksButton2 = findViewById(R.id.updateBookmarksButton2);
+		updateBookmarksButton2.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				updateBookmarksClicked();
+			}
+		});
+
+		bookmarkList.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
+				Bookmark selectedBookmark = (Bookmark) p.getAdapter().getItem(pos);
+				bookmarkListItemClicked(selectedBookmark);
+			}
+		});
+
+		initBookmarkList();
+	}
+
+	void initBookmarkList() {
+		adapter = new BookmarkAdapter(this);
+		bookmarkList.setAdapter(adapter);
+	}
+
+	void updateBookmarksClicked() {
+		UpdateBookmarksTask task = new UpdateBookmarksTask();
+
+		task.execute(search.getText().toString(), application.getUserId());
+	}
+	
+	private static final String BOOKMARK_URL = //
+	"http://www.bookmarks.com/bookmarks/{userId}?search={search}";
+	
+	
+	class UpdateBookmarksTask extends AsyncTask<String, Void, Bookmarks> {
+
+		@Override
+		protected Bookmarks doInBackground(String... params) {
+			String searchString = params[0];
+			String userId = params[1];
+
+			RestTemplate client = new RestTemplate();
+			HashMap<String, Object> args = new HashMap<String, Object>();
+			args.put("search", searchString);
+			args.put("userId", userId);
+			HttpHeaders httpHeaders = new HttpHeaders();
+			HttpEntity<Bookmarks> request = new HttpEntity<Bookmarks>(httpHeaders);
+			ResponseEntity<Bookmarks> response = client.exchange( //
+					BOOKMARK_URL, HttpMethod.GET, request, Bookmarks.class, args);
+			Bookmarks bookmarks = response.getBody();
+
+			return bookmarks;
+		}
+
+		@Override
+		protected void onPostExecute(Bookmarks result) {
+			adapter.updateBookmarks(result);
+			bookmarkList.startAnimation(fadeIn);
+		}
+		
+	}
+
+	void bookmarkListItemClicked(Bookmark selectedBookmark) {
+		clipboardManager.setText(selectedBookmark.getUrl());
+	}
+
+}
+                ]]></script>
+            </div>
+            <div class="column">
+                <h3>After</h3>
+		<hr/>
+                <script type="syntaxhighlighter" class="brush: java; ruler:false; tab-size:2;smart-tabs:true;"><![CDATA[
+@NoTitle
+@Fullscreen
+@EActivity(R.layout.bookmarks)
+public class BookmarksToClipboardActivity extends Activity {
+	
+	BookmarkAdapter adapter;
+	
+	@ViewById
+	ListView bookmarkList;
+
+	@ViewById
+	EditText search;
+	
+	@App
+	BookmarkApplication application;
+	
+	@RestService
+	BookmarkClient restClient;
+
+	@AnimationRes
+	Animation fadeIn;
+	
+	@SystemService
+	ClipboardManager clipboardManager;
+
+	@AfterViews
+	void initBookmarkList() {
+		adapter = new BookmarkAdapter(this);
+		bookmarkList.setAdapter(adapter);
+	}
+	
+	@Click({R.id.updateBookmarksButton1, R.id.updateBookmarksButton2})
+	void updateBookmarksClicked() {
+		searchAsync(search.getText().toString(), application.getUserId());
+	}
+	
+	@Background
+	void searchAsync(String searchString, String userId) {
+		Bookmarks bookmarks = restClient.getBookmarks(searchString, userId);
+		updateBookmarks(bookmarks);
+	}
+
+	@UiThread
+	void updateBookmarks(Bookmarks bookmarks) {
+		adapter.updateBookmarks(bookmarks);
+		bookmarkList.startAnimation(fadeIn);
+	}
+	
+	@ItemClick
+	void bookmarkListItemClicked(Bookmark selectedBookmark) {
+		clipboardManager.setText(selectedBookmark.getUrl());
+	}
+
+}
+                ]]></script>
+                <pre class="brush: java">
+@Rest("http://www.bookmarks.com")
+public interface BookmarkClient {
+	
+	@Get("/bookmarks/{userId}?search={search}")
+	Bookmarks getBookmarks(String search, String userId);
+
+}
+                </pre>
+                
+                
+            </div>
+	</div>
+	<div id="footer-container">
+		<footer class="wrapper">
+			<p><span class="italic">"The ratio of time spent reading [code] versus writing is well over 10 to 1 [...] [therefore] making it <br/>easy to read makes it easier to write."</span> - <span class="author">Robert C. Martin</span></p>
+		</footer>
+	</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
+<script type="text/javascript">
+         SyntaxHighlighter.all()
+</script>
+
+<!-- scripts concatenated and minified via ant build script-->
+<script src="js/plugins.js"></script>
+<script src="js/script.js"></script>
+<!-- end scripts-->
+
+</body>
+</html>
