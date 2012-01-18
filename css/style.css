@@ -23,7 +23,8 @@ body {
 	font-family:Helvetica, Helvetica Neue, Arial, sans-serif;
 	width:100%;
 	margin: 0; 
-	background-color:#A4C639
+	background-color:#A4C639;
+	min-width:1200px;
 }
 
 .wrapper{
