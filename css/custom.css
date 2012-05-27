@@ -1,0 +1,72 @@
+body {
+	background-image:url('../img/background.jpg');
+	 
+}
+
+.hero-unit {
+  background-color: #fff;
+}
+
+.aa-logo {
+  min-height: 100px;
+  padding-left:110px;
+  background-image:url('../img/logo.png');
+  background-repeat: no-repeat;
+}
+
+.content {
+  margin-top: 60px;
+  
+}
+
+.headline h1 {
+  margin: 36px 0 27px;
+  font-size: 40px;
+  font-weight: 300;
+  text-align: center;
+}
+
+.headline-byline {
+  margin: -18px 0 27px;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 24px;
+  color: #999;
+  text-align: center;
+}
+
+.headline p {
+  margin-right: 10px;
+}
+
+footer {
+  background-color:#474747;
+  color:gray;
+  text-align:center;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+footer p{
+  padding-top: 30px;
+  padding-bottom: 30px;
+  margin-bottom:0;
+  font-size:16px;
+}
+
+.quote {
+  font-style:italic;
+    vertical-align: middle;
+  color:white;
+}
+
+.author {
+  color:#A4C639;
+}
+
+hr {
+  border:0;
+  background-color:#d1d1d1;
+  height:2px;
+  margin-bottom:15px;
+}
