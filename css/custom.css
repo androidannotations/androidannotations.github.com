@@ -7,16 +7,8 @@ body {
   background-color: #fff;
 }
 
-.aa-logo {
-  min-height: 100px;
-  padding-left:110px;
-  background-image:url('../img/logo.png');
-  background-repeat: no-repeat;
-}
-
 .content {
-  margin-top: 60px;
-  
+  margin-top: 60px; 
 }
 
 .headline h1 {
