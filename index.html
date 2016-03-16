@@ -183,9 +183,9 @@ public class BookmarksToClipboardActivity extends Activity {
     <h1>After</h1>
 		<hr/>
 <pre class="prettyprint linenums">
-@NoTitle
 @Fullscreen
 @EActivity(R.layout.bookmarks)
+@WindowFeature(Window.FEATURE_NO_TITLE)
 public class BookmarksToClipboardActivity extends Activity {
   
   BookmarkAdapter adapter;
@@ -243,7 +243,7 @@ public class BookmarksToClipboardActivity extends Activity {
 public interface BookmarkClient {
   
   @Get("/bookmarks/{userId}?search={search}")
-  Bookmarks getBookmarks(String search, String userId);
+  Bookmarks getBookmarks(@Path String search, @Path String userId);
 
 }
 </pre>
